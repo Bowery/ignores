@@ -16,10 +16,10 @@ var (
 
 // Get retrieves a list of files to ignore in a given directory.
 // A set of default ignores may be given.
-func Get(file string, ignores ...string) ([]string, error) {
+func Get(path string, ignores ...string) ([]string, error) {
 	var matches []string
 
-	file, err := os.Open(file)
+	file, err := os.Open(path)
 	if err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func Get(file string, ignores ...string) ([]string, error) {
 	}
 
 	for _, ignore := range ignores {
-		ignoreMatches, err := filepath.Glob(filepath.Join(file, "..", ignore))
+		ignoreMatches, err := filepath.Glob(filepath.Join(path, "..", ignore))
 		if err != nil {
 			return nil, err
 		}
