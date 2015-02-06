@@ -14,10 +14,13 @@ var (
 	VersionControlSystems = []string{".hg", ".git", ".svn", ".bzr"}
 )
 
-// Get retrieves a list of files to ignore in a given directory.
-// A set of default ignores may be given.
+// Get retrieves a list of paths to ignore in the directory the given ignore
+// file lives in. A set of default ignores may be given.
 func Get(path string, ignores ...string) ([]string, error) {
 	var matches []string
+	if ignores == nil {
+		ignores = make([]string, 0)
+	}
 
 	file, err := os.Open(path)
 	if err != nil && !os.IsNotExist(err) {
@@ -39,7 +42,7 @@ func Get(path string, ignores ...string) ([]string, error) {
 	}
 
 	for _, ignore := range ignores {
-		ignoreMatches, err := filepath.Glob(filepath.Join(path, "..", ignore))
+		ignoreMatches, err := filepath.Glob(filepath.Join(filepath.Dir(path), ignore))
 		if err != nil {
 			return nil, err
 		}
